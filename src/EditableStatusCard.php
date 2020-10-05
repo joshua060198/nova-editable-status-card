@@ -58,7 +58,7 @@ class EditableStatusCard extends ResourceTool
      * @param BenSampo\Enum $class
      * @return this
      */
-    public function dataFromClass($class, $category = 'default')
+    public function dataFromClass($class, $category)
     {
         $this->withBackgroundColor($category);
         $this->withTextColor($category);
@@ -75,7 +75,7 @@ class EditableStatusCard extends ResourceTool
      * @param String $category
      * @return this
      */
-    public function dataFromArray($category = 'default')
+    public function dataFromArray($category)
     {
         $this->withBackgroundColor($category);
         $this->withTextColor($category);
