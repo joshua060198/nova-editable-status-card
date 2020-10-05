@@ -1,5 +1,10 @@
 # Editable Status Card
 
+![Packagist Downloads](https://img.shields.io/packagist/dd/joshua060198/nova-editable-status-card?style=flat)
+![GitHub issues](https://img.shields.io/github/issues/joshua060198/nova-editable-status-card?style=flat)
+![GitHub](https://img.shields.io/github/license/joshua060198/nova-editable-status-card?style=flat)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/joshua060198/nova-editable-status-card)
+
 This package lets you add a status card on your resource detail page and you can directly edit the status on the card.
 
 ## Installation
@@ -118,13 +123,13 @@ return [
 
 This config defines the size of:
 
--   Cards
--   Title
--   Status text
--   Icon (use fix sizing: `px`, `rem`, `em`, `%`)
--   Edit field
--   Edit choices
--   Save button
+- Cards
+- Title
+- Status text
+- Icon (use fix sizing: `px`, `rem`, `em`, `%`)
+- Edit field
+- Edit choices
+- Save button
 
 You have to use `tailwind.css` classes for each options except for icon size.
 
