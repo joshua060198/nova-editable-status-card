@@ -16,27 +16,10 @@ composer require joshua060198/nova-editable-status-card
 ## Publishing config
 
 ```shell
-php artisan vendor:publish --provider="Joshua060198/ToolServiceProvider"
+php artisan vendor:publish --provider="Joshua060198\EditableStatusCard\ToolServiceProvider"
 ```
 
 ## Config
-
-### Type
-
-Change this config to `class` if you want to use [bensampo/laravel-enum](https://github.com/BenSampo/laravel-enum) package.
-
-```php
-
-return [
-
-    ...
-
-    'type' => 'array',
-
-    ...
-
-]
-```
 
 ### Status data
 
@@ -182,7 +165,7 @@ class Order extends Resource {
                 'my_other_status_colum',
                 $this->getStatusValue()
             )
-            ->dataFromClass('MyEnumClass')
+            ->dataFromClass(MyEnumClass::class, 'category')
             // with icon
             ->withIcon('https://icon.com/my-icon.png'),
         ]
@@ -208,6 +191,103 @@ class Order extends Model {
     public static function editableStatusPermission(NovaRequest $request)
     {
         return $request->user()->id === 1;
+    }
+
+    ...
+}
+```
+
+## Methods
+
+### `dataFromClass($class, $category)`
+
+Set the status data using [bensampo/laravel-enum](https://github.com/BenSampo/laravel-enum) enum class.
+
+#### Param
+
+- \$class = the enum class
+- \$category = which category in config define this class. This is useful for finding card background and text color
+
+#### Example
+
+```php
+// app/Nova/Order.php
+
+use Joshua060198\EditableStatusCard\EditableStatusCard;
+
+class Order extends Resource {
+
+    ...
+
+    public function fields(Request $request) {
+
+        return [
+            EditableStatusCard::make(...)
+                ->dataFromClass(OrderStatus::class, 'order')
+        ]
+    }
+
+    ...
+}
+```
+
+### `dataFromArray($category)`
+
+Set the status data using array which is defined in config file.
+
+#### Param
+
+- \$category = which category in config define this class. This is useful for finding card background and text color.
+
+#### Example
+
+```php
+// app/Nova/Order.php
+
+use Joshua060198\EditableStatusCard\EditableStatusCard;
+
+class Order extends Resource {
+
+    ...
+
+    public function fields(Request $request) {
+
+        return [
+            EditableStatusCard::make(...)
+                ->dataFromArray('order')
+        ]
+    }
+
+    ...
+}
+```
+
+### `withIcon($icon)`
+
+Set the icon for the corresponding card.
+
+#### Param
+
+- \$icon = the URL or full path to the icon resource.
+
+#### Example
+
+```php
+// app/Nova/Order.php
+
+use Joshua060198\EditableStatusCard\EditableStatusCard;
+
+class Order extends Resource {
+
+    ...
+
+    public function fields(Request $request) {
+
+        return [
+            EditableStatusCard::make(...)
+                ->dataFromArray('order')
+                ->withIcon('https://myicon.com/icon.png')
+        ]
     }
 
     ...
