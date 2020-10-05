@@ -56,7 +56,7 @@
             :id="'editField' + index"
           >
             <div
-              class="flex justify-center px-2 py-3 w-full h-50 cursor-pointer"
+              class="flex flex-wrap justify-center px-2 py-3 w-full cursor-pointer"
             >
               <div
                 class="choices rounded-full bg-success mx-2 p-3"
@@ -72,7 +72,7 @@
                 v-on:click="choiceClicked(index, index2, $event)"
               ></div>
             </div>
-            <hr class="border-black my-3 text-black" />
+            <hr class="border-black mb-3 mt-0 text-black" />
             <div
               class="flex justify-between items-center text-gray-900 my-3 mx-3"
             >

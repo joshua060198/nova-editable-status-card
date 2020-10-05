@@ -9,7 +9,28 @@ use Laravel\Nova\ResourceTool;
 
 class EditableStatusCard extends ResourceTool
 {
-    public static $aaa;
+    /**
+     * Constructor.
+     * 
+     * @param String $title
+     * @param String $attribute
+     * @param Integer $value
+     * @return void
+     */
+    public function __construct($title = 'Status', $attribute = null, $value = 0)
+    {
+        parent::__construct();
+
+        $this->withMeta([
+            'title' => $title,
+            'attribute' => $attribute ?? str_replace(' ', '_', Str::lower($title)),
+            'data' => config('editable-status-card.status.default'),
+            'background_color' => config('editable-status-card.background.default'),
+            'text_color' => config('editable-status-card.text.default'),
+            'value' => $value,
+            'icon' => null
+        ]);
+    }
 
     /**
      * Get the displayable name of the resource tool.
@@ -37,9 +58,15 @@ class EditableStatusCard extends ResourceTool
      * @param BenSampo\Enum $class
      * @return this
      */
-    public function dataFromClass($class)
+    public function dataFromClass($class, $category = 'default')
     {
-        return $this->withMeta(['data' => $class::asArray()]);
+        $this->withBackgroundColor($category);
+        $this->withTextColor($category);
+        $data = [];
+        foreach ($class::asArray() as $key => $value) {
+            array_push($data, preg_replace('/(?<!\ )[A-Z]/', ' $0', $key));
+        }
+        return $this->withMeta(['data' => $data]);
     }
 
     /**
@@ -50,13 +77,9 @@ class EditableStatusCard extends ResourceTool
      */
     public function dataFromArray($category = 'default')
     {
-        $this->withMeta([
-            'data' => config('editable-status-card.status.' . $category),
-            'background_color' => config('editable-status-card.background.' . $category),
-            'text_color' => config('editable-status-card.text.' . $category)
-        ]);
-
-        return $this;
+        $this->withBackgroundColor($category);
+        $this->withTextColor($category);
+        return $this->withMeta(['data' => config('editable-status-card.status.' . $category)]);
     }
 
     /**
@@ -75,6 +98,7 @@ class EditableStatusCard extends ResourceTool
      * any url to the source.
      * 
      * @param String $icon
+     * @return this
      */
     public function withIcon($icon)
     {
@@ -82,25 +106,24 @@ class EditableStatusCard extends ResourceTool
     }
 
     /**
-     * Constructor.
+     * Set card background color.
      * 
-     * @param String $title
-     * @param String $attribute
-     * @param Integer $value
-     * @return void
+     * @param String $category
+     * @return this
      */
-    public function __construct($title = 'Status', $attribute = null, $value = 0)
+    public function withBackgroundColor($category = 'default')
     {
-        parent::__construct();
+        return $this->withMeta(['background_color' => config('editable-status-card.background.' . $category)]);
+    }
 
-        $this->withMeta([
-            'title' => $title,
-            'attribute' => $attribute ?? str_replace(' ', '_', Str::lower($title)),
-            'data' => config('editable-status-card.status.default'),
-            'background_color' => config('editable-status-card.background.default'),
-            'text_color' => config('editable-status-card.text.default'),
-            'value' => $value,
-            'icon' => null
-        ]);
+    /**
+     * Set card text color.
+     * 
+     * @param String $category
+     * @return this
+     */
+    public function withTextColor($category = 'default')
+    {
+        return $this->withMeta(['text_color' => config('editable-status-card.text.' . $category)]);
     }
 }
