@@ -1,0 +1,42 @@
+{
+  "name": "joshua060198/editable-status-card",
+  "description": "Editable status card for Laravel Nova",
+  "keywords": [
+    "laravel",
+    "nova",
+    "status",
+    "card",
+    "editable",
+    "cards",
+    "detail"
+  ],
+  "version": "0.0.1",
+  "authors": [
+    {
+      "name": "Joshua Lauwrich Nandy",
+      "email": "joshua.lauwrich.98@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=7.1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Joshua060198\\EditableStatusCard\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Joshua060198\\EditableStatusCard\\ToolServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
