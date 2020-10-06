@@ -203,8 +203,10 @@ export default {
       const el = document.getElementById("editField" + index);
       el.classList.toggle("active");
       if (el.classList.contains("active")) {
+        el.style.height = el.scrollHeight + "px";
         e.target.innerHTML = "Cancel";
       } else {
+        el.style.height = "0px";
         e.target.innerHTML = "Edit";
       }
       e.target.blur();
