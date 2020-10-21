@@ -16,7 +16,11 @@
         >
           <div class="px-6 py-4">
             <div
-              :class="'font-bold mt-4 mb-6 text-center smallcaps ' + title_size"
+              :class="
+                (card.compact ? '' : 'mt-4 mb-6 ') +
+                'font-bold text-center smallcaps ' +
+                title_size
+              "
             >
               <span v-if="card.title">
                 {{ card.title }}
@@ -28,7 +32,11 @@
                 border: '1px solid ' + card.text_color[card.value],
               }"
             />
-            <div class="flex space-x-4 mt-6 items-center">
+            <div
+              :class="
+                (card.compact ? '' : 'mt-6 ') + 'flex space-x-4 items-center'
+              "
+            >
               <img :class="icon_width_size" :src="card.icon" v-if="card.icon" />
               <div
                 :class="
@@ -40,7 +48,10 @@
             </div>
           </div>
           <button
-            class="bg-transparent hover:bg-white font-semibold hover-text-black py-2 px-4 border border-black hover-border-transparent rounded my-6 outline-none uppercase"
+            :class="
+              (card.compact ? 'my-3 ' : 'my-6 ') +
+              'bg-transparent hover:bg-white font-semibold hover-text-black py-2 px-4 border border-black hover-border-transparent rounded outline-none uppercase'
+            "
             :style="{
               color: card.text_color[card.value],
               borderColor: card.text_color[card.value],

@@ -28,7 +28,8 @@ class EditableStatusCard extends ResourceTool
             'background_color' => config('editable-status-card.background.default'),
             'text_color' => config('editable-status-card.text.default'),
             'value' => $value,
-            'icon' => null
+            'icon' => null,
+            'compact' => false
         ]);
     }
 
@@ -125,5 +126,9 @@ class EditableStatusCard extends ResourceTool
     public function withTextColor($category = 'default')
     {
         return $this->withMeta(['text_color' => config('editable-status-card.text.' . $category)]);
+    }
+
+    public function compact() {
+        return $this->withMeta(['compact' => true]);
     }
 }
