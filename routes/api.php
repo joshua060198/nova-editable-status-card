@@ -26,6 +26,11 @@ Route::post('sizes', function (NovaRequest $request) {
     return response()->json(['result' => $result]);
 });
 
+Route::get('checkdebug', function(NovaRequest $request) {
+    $result = config('app.debug');
+    return response()->json(['debug' => $result]);
+});
+
 Route::post('save', function (NovaRequest $request) {
     $resource_name = $request->input('resourceName');
     $resource_id = $request->input('resourceId');

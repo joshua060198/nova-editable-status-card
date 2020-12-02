@@ -48,10 +48,7 @@
             </div>
           </div>
           <button
-            :class="
-              (card.compact ? 'my-3 ' : 'my-6 ') +
-              'bg-transparent hover:bg-white font-semibold hover-text-black py-2 px-4 border border-black hover-border-transparent rounded outline-none uppercase'
-            "
+            class="bg-transparent hover:bg-white font-semibold hover-text-black py-2 px-4 border border-black hover-border-transparent rounded my-6 outline-none uppercase"
             :style="{
               color: card.text_color[card.value],
               borderColor: card.text_color[card.value],
@@ -139,9 +136,19 @@ export default {
   mounted: function () {
     this.checkPermission();
     this.getComponentSizes();
+    this.checkDebugMode();
   },
 
   methods: {
+    checkDebugMode() {
+      Nova.request()
+        .get("/nova-vendor/editable-status-card/checkdebug")
+        .then((result) => {
+          if (result.data.debug) {
+            console.log(this.panel.fields);
+          }
+        });
+    },
     checkPermission() {
       const self = this;
       const resourceName = this.resourceName;
