@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <div class="flex flex-wrap -m-4">
+    <div :v-if="loaded" class="flex flex-wrap -m-4">
       <div
         v-for="(card, index) in panel.fields"
         :key="card.key"
@@ -121,16 +121,17 @@ export default {
   props: ["resourceName", "resourceId", "panel"],
 
   data: {
+    loaded: false,
     editPermission: false,
     currentBackgroundColor: "#fff",
     currentTextColor: "#000",
     cards_size: "w-1/5",
-    title_size: "text-xl",
-    status_size: "text-2xl",
-    edit_field_size: "text-sm",
-    icon_width_size: "w-16",
-    choices_size: "15px",
-    save_button_size: "text-sm",
+    title_size: "text-sm",
+    status_size: "text-base",
+    edit_field_size: "text-xs",
+    icon_width_size: "w-8",
+    choices_size: "25px",
+    save_button_size: "text-xs",
   },
 
   mounted: function () {
@@ -176,6 +177,7 @@ export default {
           self.icon_width_size = result.data.result["icon_width_size"];
           self.choices_size = result.data.result["choices_size"];
           self.save_button_size = result.data.result["save_button_size"];
+          self.loaded = true;
           self.$forceUpdate();
         });
     },
