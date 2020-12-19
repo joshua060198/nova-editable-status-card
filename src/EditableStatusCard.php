@@ -2,7 +2,6 @@
 
 namespace Joshua060198\EditableStatusCard;
 
-use App\Enums\OrderDetailStatus;
 use Closure;
 use Illuminate\Support\Str;
 use Laravel\Nova\ResourceTool;
@@ -12,25 +11,35 @@ class EditableStatusCard extends ResourceTool
     /**
      * Constructor.
      * 
+     * @param \BenSampo\Enum\Enum $class
+     * @param Integer $value
      * @param String $title
      * @param String $attribute
-     * @param Integer $value
      * @return void
      */
-    public function __construct($title = 'Status', $attribute = null, $value = 0)
+    public function __construct($class, $value, $title = 'Status', $attribute = null)
     {
         parent::__construct();
 
         $this->withMeta([
             'title' => $title,
             'attribute' => $attribute ?? str_replace(' ', '_', Str::lower($title)),
-            'data' => config('editable-status-card.status.default'),
-            'background_color' => config('editable-status-card.background.default'),
-            'text_color' => config('editable-status-card.text.default'),
+            'background_color' => ['#21b978', 'rgb(231, 68, 68)'],
+            'text_color' => ['white', '#FFFFFF'],
             'value' => $value,
             'icon' => null,
-            'compact' => false
+            'compact' => false,
+            'can_edit' => true,
+            'card_size' => 'w-1/5',
+            'title_size' => 'text-sm',
+            'status_size' => 'text-base',
+            'edit_field_size' => 'text-xs',
+            'icon_size' => 'w-8',
+            'choices_size' => '25px',
+            'save_button_size' => 'text-xs',
         ]);
+
+        $this->dataFromClass($class);
     }
 
     /**
@@ -56,31 +65,20 @@ class EditableStatusCard extends ResourceTool
     /**
      * Set status data from enum class.
      * 
-     * @param BenSampo\Enum $class
+     * @param \BenSampo\Enum\Enum $class
      * @return this
      */
-    public function dataFromClass($class, $category)
+    public function dataFromClass($class)
     {
-        $this->withBackgroundColor($category);
-        $this->withTextColor($category);
+        $this->withMeta(['background_color' => $class::editableStatusBackgroundColor()]);
+
+        $this->withMeta(['text_color' => $class::editableStatusTextColor()]);
+
         $data = [];
         foreach ($class::asArray() as $key => $value) {
             array_push($data, preg_replace('/(?<!\ )[A-Z]/', ' $0', $key));
         }
         return $this->withMeta(['data' => $data]);
-    }
-
-    /**
-     * Set status data from array in config files.
-     * 
-     * @param String $category
-     * @return this
-     */
-    public function dataFromArray($category)
-    {
-        $this->withBackgroundColor($category);
-        $this->withTextColor($category);
-        return $this->withMeta(['data' => config('editable-status-card.status.' . $category)]);
     }
 
     /**
@@ -107,28 +105,97 @@ class EditableStatusCard extends ResourceTool
     }
 
     /**
-     * Set card background color.
+     * Set card spacing
      * 
-     * @param String $category
+     * @param Boolean $compact
      * @return this
      */
-    public function withBackgroundColor($category = 'default')
-    {
-        return $this->withMeta(['background_color' => config('editable-status-card.background.' . $category)]);
+    public function compact($compact = true) {
+        return $this->withMeta(['compact' => $compact]);
     }
 
     /**
-     * Set card text color.
+     * Set editing feature on card
      * 
-     * @param String $category
+     * @param Boolean $callback
      * @return this
      */
-    public function withTextColor($category = 'default')
-    {
-        return $this->withMeta(['text_color' => config('editable-status-card.text.' . $category)]);
+    public function canEdit($callback = true) {
+        if ((is_string($callback) && function_exists($callback))  
+            || (is_object($callback) && ($callback instanceof Closure))) {
+                return $this->withMeta(['can_edit' => call_user_func($callback)]);
+            } else {
+                return $this->withMeta(['can_edit' => $callback]);
+            }
     }
 
-    public function compact() {
-        return $this->withMeta(['compact' => true]);
+    /**
+     * Set card size as class name
+     * 
+     * @param String $class
+     * @return this
+     */
+    public function cardSize($class = '') {
+        return $this->withMeta(['card_size' => $class]);
+    }
+
+    /**
+     * Set card title size as class name
+     * 
+     * @param String $class
+     * @return this
+     */
+    public function titleSize($class = '') {
+        return $this->withMeta(['title_size' => $class]);
+    }
+
+    /**
+     * Set card status size as class name
+     * 
+     * @param String $class
+     * @return this
+     */
+    public function statusSize($class = '') {
+        return $this->withMeta(['status_size' => $class]);
+    }
+
+    /**
+     * Set card edit field size as class name
+     * 
+     * @param String $class
+     * @return this
+     */
+    public function editFieldSize($class = '') {
+        return $this->withMeta(['edit_field_size' => $class]);
+    }
+
+    /**
+     * Set card icon width size size as class name
+     * 
+     * @param String $class
+     * @return this
+     */
+    public function iconSize($class = '') {
+        return $this->withMeta(['icon_size' => $class]);
+    }
+
+    /**
+     * Set card choices size
+     * 
+     * @param String $size
+     * @return this
+     */
+    public function choicesSize($size = '') {
+        return $this->withMeta(['choices_size' => $size]);
+    }
+
+    /**
+     * Set card save button size as class name
+     * 
+     * @param String $class
+     * @return this
+     */
+    public function saveButtonSize($class = '') {
+        return $this->withMeta(['save_button_size' => $class]);
     }
 }

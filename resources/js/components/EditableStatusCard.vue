@@ -4,7 +4,7 @@
       <div
         v-for="(card, index) in panel.fields"
         :key="card.key"
-        :class="'p-4 ' + cards_size"
+        :class="'p-4 ' + card.card_size"
       >
         <div
           class="rounded overflow-hidden shadow-lg text-center"
@@ -14,12 +14,12 @@
           }"
           :id="'card_container' + index"
         >
-          <div class="px-6 py-4">
+          <div :class="card.compact ? 'px-3 py-2' : 'px-6 py-4'">
             <div
               :class="
                 (card.compact ? '' : 'mt-4 mb-6 ') +
                 'font-bold text-center smallcaps ' +
-                title_size
+                card.title_size
               "
             >
               <span v-if="card.title">
@@ -34,13 +34,15 @@
             />
             <div
               :class="
-                (card.compact ? '' : 'mt-6 ') + 'flex space-x-4 items-center'
+                (card.compact ? 'mt-2 ' : 'mt-6 ') +
+                'flex space-x-4 items-center'
               "
             >
-              <img :class="icon_width_size" :src="card.icon" v-if="card.icon" />
+              <img :class="card.icon_size" :src="card.icon" v-if="card.icon" />
               <div
                 :class="
-                  'text-center w-full mx-6 uppercase smallcaps ' + status_size
+                  'text-center w-full mx-6 uppercase smallcaps ' +
+                  card.status_size
                 "
               >
                 {{ card.data[card.value] }}
@@ -48,14 +50,17 @@
             </div>
           </div>
           <button
-            class="bg-transparent hover:bg-white font-semibold hover-text-black py-2 px-4 border border-black hover-border-transparent rounded my-6 outline-none uppercase"
+            :class="
+              (card.compact ? 'mt-1' : 'mt-6') +
+              ' bg-transparent hover:bg-white font-semibold hover-text-black py-2 px-4 border border-black hover-border-transparent mb-3 rounded outline-none uppercase'
+            "
             :style="{
               color: card.text_color[card.value],
               borderColor: card.text_color[card.value],
               minWidth: 'calc(100% - 3em)',
             }"
             v-on:click="toggleEditField(index, $event)"
-            v-if="editPermission"
+            v-if="card.can_edit"
           >
             Edit
           </button>
@@ -71,8 +76,8 @@
                 v-for="(item, index2) in card.data"
                 :style="{
                   backgroundColor: card.background_color[index2],
-                  width: choices_size,
-                  height: choices_size,
+                  width: card.choices_size,
+                  height: card.choices_size,
                 }"
                 :key="item"
                 v-on:mouseover="choiceMouseOver(index, index2)"
@@ -87,13 +92,15 @@
               <div class="text-center w-full">
                 <span
                   :class="
-                    'flex-1 text-black text-bold uppercase ' + edit_field_size
+                    'flex-1 text-black text-bold uppercase ' +
+                    card.edit_field_size
                   "
                   :id="'preview_text' + index"
                 ></span>
                 <span
                   :class="
-                    'flex-1 text-black text-bold uppercase ' + edit_field_size
+                    'flex-1 text-black text-bold uppercase ' +
+                    card.edit_field_size
                   "
                   :style="{ color: currentTextColor }"
                   :id="'clicked_text' + index"
@@ -102,7 +109,7 @@
               <button
                 :class="
                   'px-6 py-2 transition ease-in duration-200 uppercase rounded-full hover-bg-gray-800 hover:text-white border-2 border-gray-900 focus:outline-none ' +
-                  save_button_size
+                  card.save_button_size
                 "
                 v-on:click="save(index, $event)"
               >
@@ -122,22 +129,13 @@ export default {
 
   data: {
     loaded: false,
-    editPermission: false,
     currentBackgroundColor: "#fff",
     currentTextColor: "#000",
-    cards_size: "w-1/5",
-    title_size: "text-sm",
-    status_size: "text-base",
-    edit_field_size: "text-xs",
-    icon_width_size: "w-8",
-    choices_size: "25px",
-    save_button_size: "text-xs",
   },
 
-  mounted: function () {
-    this.checkPermission();
-    this.getComponentSizes();
-    this.checkDebugMode();
+  mounted: async function () {
+    await this.checkDebugMode();
+    this.loaded = true;
   },
 
   methods: {
@@ -148,37 +146,6 @@ export default {
           if (result.data.debug) {
             console.log(this.panel.fields);
           }
-        });
-    },
-    checkPermission() {
-      const self = this;
-      const resourceName = this.resourceName;
-      Nova.request()
-        .post("/nova-vendor/editable-status-card/allowediting", {
-          resourceName: resourceName,
-        })
-        .then((result) => {
-          self.editPermission = result.data.result;
-          self.$forceUpdate();
-        });
-    },
-    getComponentSizes() {
-      const self = this;
-      const resourceName = this.resourceName;
-      Nova.request()
-        .post("/nova-vendor/editable-status-card/sizes", {
-          resourceName: resourceName,
-        })
-        .then((result) => {
-          self.cards_size = result.data.result["cards_size"];
-          self.title_size = result.data.result["title_size"];
-          self.status_size = result.data.result["status_size"];
-          self.edit_field_size = result.data.result["edit_field_size"];
-          self.icon_width_size = result.data.result["icon_width_size"];
-          self.choices_size = result.data.result["choices_size"];
-          self.save_button_size = result.data.result["save_button_size"];
-          self.loaded = true;
-          self.$forceUpdate();
         });
     },
     choiceMouseOver(index1, index2) {
@@ -223,7 +190,7 @@ export default {
       const el = document.getElementById("editField" + index);
       el.classList.toggle("active");
       if (el.classList.contains("active")) {
-        el.style.height = el.scrollHeight + "px";
+        el.style.height = el.scrollHeight + 10 + "px";
         e.target.innerHTML = "Cancel";
       } else {
         el.style.height = "0px";
@@ -232,59 +199,65 @@ export default {
       e.target.blur();
     },
     save(index, e) {
-      const self = this;
-      const selected_data = this.panel.fields[index].data;
-      const value_text = e.target.parentElement.querySelector(
-        "#clicked_text" + index
-      ).innerHTML;
-
-      let value = 0;
-
-      for (let i = 0; i < this.panel.fields[index].data.length; i++) {
-        if (this.panel.fields[index].data[i] == value_text) {
-          value = i;
-          break;
-        }
-      }
-
-      Nova.request()
-        .post("/nova-vendor/editable-status-card/save", {
-          resourceName: self.resourceName,
-          resourceId: self.resourceId,
-          attribute: self.panel.fields[index].attribute,
-          value: value,
-        })
-        .then(function (response) {
-          if (response.data.error) {
-            self.$toasted.show(response.data.error, {
-              type: "error",
-            });
-          } else {
-            self.$toasted.show(response.data.data, {
-              type: "success",
-            });
-            self.panel.fields[index].value = value;
-            document.getElementById("preview_text" + index).innerHTML = "";
-            document.getElementById("clicked_text" + index).innerHTML = "";
-            const temp = e.target.parentElement.parentElement.parentElement.querySelectorAll(
-              ".choices"
-            );
-            for (let i = 0; i < temp.length; i++) {
-              temp[i].classList.remove("active");
-            }
-
-            const temp2 = e.target.parentElement.parentElement.parentElement.querySelector(
-              "button"
-            );
-            console.log(e.target.parentElement.parentElement.parentElement);
-            temp2.click();
-
-            self.$forceUpdate();
-          }
-        })
-        .catch(function (error) {
-          self.$toasted.show(error.response, { type: "error" });
+      if (!this.panel.fields[index].can_edit) {
+        self.$toasted.show("You are not authorized to perform this!", {
+          type: "error",
         });
+      } else {
+        const self = this;
+        const selected_data = this.panel.fields[index].data;
+        const value_text = e.target.parentElement.querySelector(
+          "#clicked_text" + index
+        ).innerHTML;
+
+        let value = 0;
+
+        for (let i = 0; i < this.panel.fields[index].data.length; i++) {
+          if (this.panel.fields[index].data[i] == value_text) {
+            value = i;
+            break;
+          }
+        }
+
+        Nova.request()
+          .post("/nova-vendor/editable-status-card/save", {
+            resourceName: self.resourceName,
+            resourceId: self.resourceId,
+            attribute: self.panel.fields[index].attribute,
+            value: value,
+          })
+          .then(function (response) {
+            if (response.data.error) {
+              self.$toasted.show(response.data.error, {
+                type: "error",
+              });
+            } else {
+              self.$toasted.show(response.data.data, {
+                type: "success",
+              });
+              self.panel.fields[index].value = value;
+              document.getElementById("preview_text" + index).innerHTML = "";
+              document.getElementById("clicked_text" + index).innerHTML = "";
+              const temp = e.target.parentElement.parentElement.parentElement.querySelectorAll(
+                ".choices"
+              );
+              for (let i = 0; i < temp.length; i++) {
+                temp[i].classList.remove("active");
+              }
+
+              const temp2 = e.target.parentElement.parentElement.parentElement.querySelector(
+                "button"
+              );
+              console.log(e.target.parentElement.parentElement.parentElement);
+              temp2.click();
+
+              self.$forceUpdate();
+            }
+          })
+          .catch(function (error) {
+            self.$toasted.show(error.response, { type: "error" });
+          });
+      }
     },
   },
 };
