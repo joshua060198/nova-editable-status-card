@@ -9,7 +9,7 @@ This package lets you add a status card on your resource detail page and you can
 
 ## Warning
 
-Possible **breaking changes** from v0.9.0. See [how to migrate to v1](migrating_to_v1.md) for more information.
+Possible **breaking changes** from v0.0.9. See [how to migrate to v1](migrating_to_v1.md) for more information.
 
 ## Installation
 
@@ -154,6 +154,25 @@ class Order extends Resource {
     ...
 }
 ```
+
+## Constructor
+
+There are 2 required parameters and 2 more additional parameter for this component.
+
+- `$class` (required)
+
+  Enum class that holds the status data.
+
+- `$value` (required)
+
+  Current value to be displayed
+
+- `$title` (optional, default = 'Status')
+
+  The title of the card
+
+- `$attribute` (optional, default = null)
+  The column name that will stored the edited status value.
 
 ## Methods
 
