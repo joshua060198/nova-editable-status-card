@@ -34,7 +34,7 @@ class EditableStatusCard extends ResourceTool
             'title_size' => 'text-sm',
             'status_size' => 'text-base',
             'edit_field_size' => 'text-xs',
-            'icon_size' => 'w-8',
+            'icon_width_size' => 'w-8',
             'choices_size' => '25px',
             'save_button_size' => 'text-xs',
         ]);
@@ -175,18 +175,18 @@ class EditableStatusCard extends ResourceTool
      * @param String $class
      * @return this
      */
-    public function iconSize($class = '') {
-        return $this->withMeta(['icon_size' => $class]);
+    public function iconWidthSize($class = '') {
+        return $this->withMeta(['icon_width_size' => $class]);
     }
 
     /**
-     * Set card choices size
+     * Set card choices size size as class name
      * 
-     * @param String $size
+     * @param String $class
      * @return this
      */
-    public function choicesSize($size = '') {
-        return $this->withMeta(['choices_size' => $size]);
+    public function choicesSize($class = '') {
+        return $this->withMeta(['choices_size' => $class]);
     }
 
     /**

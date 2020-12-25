@@ -38,7 +38,11 @@
                 'flex space-x-4 items-center'
               "
             >
-              <img :class="card.icon_size" :src="card.icon" v-if="card.icon" />
+              <img
+                :class="card.icon_width_size"
+                :src="card.icon"
+                v-if="card.icon"
+              />
               <div
                 :class="
                   'text-center w-full mx-6 uppercase smallcaps ' +
