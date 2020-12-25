@@ -78,7 +78,9 @@ class EditableStatusCard extends ResourceTool
         foreach ($class::asArray() as $key => $value) {
             array_push($data, preg_replace('/(?<!\ )[A-Z]/', ' $0', $key));
         }
-        return $this->withMeta(['data' => $data]);
+        $this->withMeta(['data' => $data]);
+
+        return $this;
     }
 
     /**
@@ -89,7 +91,9 @@ class EditableStatusCard extends ResourceTool
      */
     public function value($value)
     {
-        return $this->withMeta(['value' => $value]);
+        $this->withMeta(['value' => $value]);
+        
+        return $this;
     }
 
     /**
@@ -101,7 +105,9 @@ class EditableStatusCard extends ResourceTool
      */
     public function withIcon($icon)
     {
-        return $this->withMeta(['icon' => $icon]);
+        $this->withMeta(['icon' => $icon]);
+        
+        return $this;
     }
 
     /**
@@ -111,7 +117,9 @@ class EditableStatusCard extends ResourceTool
      * @return this
      */
     public function compact($compact = true) {
-        return $this->withMeta(['compact' => $compact]);
+        $this->withMeta(['compact' => $compact]);
+        
+        return $this;
     }
 
     /**
@@ -123,9 +131,13 @@ class EditableStatusCard extends ResourceTool
     public function canEdit($callback = true) {
         if ((is_string($callback) && function_exists($callback))  
             || (is_object($callback) && ($callback instanceof Closure))) {
-                return $this->withMeta(['can_edit' => call_user_func($callback)]);
+                $this->withMeta(['can_edit' => call_user_func($callback)]);
+                
+                return $this;
             } else {
-                return $this->withMeta(['can_edit' => $callback]);
+                $this->withMeta(['can_edit' => $callback]);
+                
+                return $this;
             }
     }
 
@@ -136,7 +148,9 @@ class EditableStatusCard extends ResourceTool
      * @return this
      */
     public function cardSize($class = '') {
-        return $this->withMeta(['card_size' => $class]);
+        $this->withMeta(['card_size' => $class]);
+        
+        return $this;
     }
 
     /**
@@ -146,7 +160,9 @@ class EditableStatusCard extends ResourceTool
      * @return this
      */
     public function titleSize($class = '') {
-        return $this->withMeta(['title_size' => $class]);
+        $this->withMeta(['title_size' => $class]);
+        
+        return $this;
     }
 
     /**
@@ -156,7 +172,9 @@ class EditableStatusCard extends ResourceTool
      * @return this
      */
     public function statusSize($class = '') {
-        return $this->withMeta(['status_size' => $class]);
+        $this->withMeta(['status_size' => $class]);
+        
+        return $this;
     }
 
     /**
@@ -166,7 +184,9 @@ class EditableStatusCard extends ResourceTool
      * @return this
      */
     public function editFieldSize($class = '') {
-        return $this->withMeta(['edit_field_size' => $class]);
+        $this->withMeta(['edit_field_size' => $class]);
+        
+        return $this;
     }
 
     /**
@@ -176,7 +196,9 @@ class EditableStatusCard extends ResourceTool
      * @return this
      */
     public function iconWidthSize($class = '') {
-        return $this->withMeta(['icon_width_size' => $class]);
+        $this->withMeta(['icon_width_size' => $class]);
+        
+        return $this;
     }
 
     /**
@@ -186,7 +208,9 @@ class EditableStatusCard extends ResourceTool
      * @return this
      */
     public function choicesSize($class = '') {
-        return $this->withMeta(['choices_size' => $class]);
+        $this->withMeta(['choices_size' => $class]);
+        
+        return $this;
     }
 
     /**
@@ -196,6 +220,8 @@ class EditableStatusCard extends ResourceTool
      * @return this
      */
     public function saveButtonSize($class = '') {
-        return $this->withMeta(['save_button_size' => $class]);
+        $this->withMeta(['save_button_size' => $class]);
+        
+        return $this;
     }
 }
