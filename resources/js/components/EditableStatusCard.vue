@@ -216,9 +216,9 @@ export default {
 
         let value = 0;
 
-        for (let i = 0; i < this.panel.fields[index].data.length; i++) {
-          if (this.panel.fields[index].data[i] == value_text) {
-            value = i;
+        for (let [key, val] of Object.entries(this.panel.fields[index].data)) {
+          if (val == value_text) {
+            value = key;
             break;
           }
         }

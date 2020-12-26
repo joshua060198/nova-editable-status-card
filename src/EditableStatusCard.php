@@ -74,9 +74,13 @@ class EditableStatusCard extends ResourceTool
 
         $this->withMeta(['text_color' => $class::editableStatusTextColor()]);
 
+       
         $data = [];
-        foreach ($class::asArray() as $key => $value) {
-            array_push($data, preg_replace('/(?<!\ )[A-Z]/', ' $0', $key));
+        $values = $class::getValues();
+        $keys = $class::getKeys();
+
+        for ($i = 0; $i < count($keys); $i++) {
+            $data[$values[$i]] = preg_replace('/(?<!\ )[A-Z]/', ' $0', $keys[$i]);
         }
         $this->withMeta(['data' => $data]);
 
